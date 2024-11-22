@@ -125,6 +125,26 @@ class Client:
             case 3:
                 sys.exit(0)
 
+    def _main_menu(self) -> None:
+        """"
+        Ouvre le menu principal
+        """
+        print("Menu principal")
+        print("1. Consultation de courriels")
+        print("2. Envoi de courriels")
+        print("3. Statistiques")
+        print("4. Se deconnecter")
+        print("Entrez votre choix [1-4]:")
+        choice : int = _input_choice(4)
+        match choice:
+            case 1:
+                self._read_email()
+            case 2:
+                self._send_email()
+            case 3:
+                self._check_stats()
+            case 4:
+                self._logout()
 
     def run(self) -> None:
         """Point d'entrée du client."""
@@ -134,7 +154,7 @@ class Client:
             if not self._username:
                 self._menu_authentification()
             else:
-                # Main menu
+                self._main_menu()
                 pass
 
 
