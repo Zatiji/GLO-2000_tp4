@@ -49,7 +49,10 @@ class Client:
         Si la création du compte s'est effectuée avec succès, l'attribut
         `_username` est mis à jour, sinon l'erreur est affichée.
         """
-        print("register")
+        print("Entrez un nom d'utilisateur : ")
+        username:str = input()
+        password:str = getpass.getpass("Entrez votre mot de passe :") 
+
 
     def _login(self) -> None:
         """
