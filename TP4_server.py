@@ -40,13 +40,15 @@ class Server:
         - `_client_socs` une liste des sockets clients.
         - `_logged_users` un dictionnaire associant chaque
             socket client à un nom d'utilisateur.
+        - '_existing_account' un dictionnaire associant les username aux 
+            mots de passes encrypte, sert a gerer la creation de compte
 
         S'assure que les dossiers de données du serveur existent.
         """
         # self._server_socket
         # self._client_socs
-        # self._logged_users
-        # ...
+        self._logged_users = []
+        self._existing_accounts = []
 
     def cleanup(self) -> None:
         """Ferme toutes les connexions résiduelles."""
@@ -76,7 +78,14 @@ class Server:
         except RuntimeError as e:
             error_message : gloutils.ErrorPayload() = {"error_message" : e.message}
             return error_message
-        return gloutils.GloMessage()
+        
+        #Todo : add password encryption
+        self._existing_accounts[payload.username] = payload.password          
+
+        success_message : gloutils.GloMessage() = {
+            "header" : gloutils.Headers.OK
+        }
+        return success_message
 
     def _login(self, client_soc: socket.socket, payload: gloutils.AuthPayload
                ) -> gloutils.GloMessage:
