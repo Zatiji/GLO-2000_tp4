@@ -81,7 +81,7 @@ class Server:
         
         #Todo : add password encryption
         self._existing_accounts[payload.username] = payload.password          
-
+        self._login(client_soc, payload)   
         success_message : gloutils.GloMessage() = {
             "header" : gloutils.Headers.OK
         }
