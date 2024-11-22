@@ -35,6 +35,7 @@ class Client:
         Si la création du compte s'est effectuée avec succès, l'attribut
         `_username` est mis à jour, sinon l'erreur est affichée.
         """
+        print("register")
 
     def _login(self) -> None:
         """
@@ -44,6 +45,7 @@ class Client:
         Si la connexion est effectuée avec succès, l'attribut `_username`
         est mis à jour, sinon l'erreur est affichée.
         """
+        print("login")
 
     def _quit(self) -> None:
         """
@@ -90,6 +92,25 @@ class Client:
 
         Met à jour l'attribut `_username`.
         """
+
+    def _menu_authentification(self):
+        """"
+        Ouvre le menu textuel permettant d'obtenir l'authentification de l'utilisateur
+        """
+        print("Menu de connexion")
+        print("1. Creer un compte")
+        print("2. Se connecter")
+        print("3. Quitter")
+        print("Entrez votre choix [1-3]:")
+        choice : int = _input_choice(3)
+        match choice:
+            case 1:
+                self._register()
+            case 2:
+                self._login()
+            case 3:
+                return 0
+
 
     def run(self) -> None:
         """Point d'entrée du client."""
