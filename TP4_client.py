@@ -39,6 +39,7 @@ class Client:
         Prépare un attribut `_username` pour stocker le nom d'utilisateur
         courant. Laissé vide quand l'utilisateur n'est pas connecté.
         """
+        self._username = ""
 
     def _register(self) -> None:
         """
@@ -131,8 +132,7 @@ class Client:
 
         while not should_quit:
             if not self._username:
-                # Authentication menu
-                pass
+                self._menu_authentification()
             else:
                 # Main menu
                 pass
