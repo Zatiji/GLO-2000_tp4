@@ -111,11 +111,7 @@ class Client:
         """"
         Ouvre le menu textuel permettant d'obtenir l'authentification de l'utilisateur
         """
-        print("Menu de connexion")
-        print("1. Creer un compte")
-        print("2. Se connecter")
-        print("3. Quitter")
-        print("Entrez votre choix [1-3]:")
+        print(gloutils.CLIENT_AUTH_CHOICE)
         choice : int = _input_choice(3)
         match choice:
             case 1:
