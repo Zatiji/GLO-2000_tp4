@@ -15,6 +15,18 @@ import sys
 import glosocket
 import gloutils
 
+def _input_choice(max_number : int) -> int:
+        while True:
+            choice: int = None
+            try:
+                choice: int = int(input())
+            except ValueError:
+                print("Invalid choice, please input a valid number")
+                continue
+            if choice > max_number or choice == 0:
+                print("Please input a number within the permitted range")
+                continue
+            return choice
 
 class Client:
     """Client pour le serveur mail @glo2000.ca."""
@@ -26,6 +38,7 @@ class Client:
         Prépare un attribut `_username` pour stocker le nom d'utilisateur
         courant. Laissé vide quand l'utilisateur n'est pas connecté.
         """
+        self._username = ""
 
     def _register(self) -> None:
         """
@@ -91,18 +104,36 @@ class Client:
         Met à jour l'attribut `_username`.
         """
 
+    def _menu_authentification(self):
+        """"
+        Ouvre le menu textuel permettant d'obtenir l'authentification de l'utilisateur
+        """
+        print("Menu de connexion")
+        print("1. Creer un compte")
+        print("2. Se connecter")
+        print("3. Quitter")
+        print("Entrez votre choix [1-3]:")
+        choice : int = _input_choice(3)
+        match choice:
+            case 1:
+                print("1")
+            case 2:
+                print("2")
+            case 3:
+                print("3")
+
+
     def run(self) -> None:
         """Point d'entrée du client."""
         should_quit = False
 
         while not should_quit:
             if not self._username:
-                # Authentication menu
+                self._menu_authentification()
                 pass
             else:
                 # Main menu
                 pass
-
 
 def _main() -> int:
     parser = argparse.ArgumentParser()
@@ -117,3 +148,4 @@ def _main() -> int:
 
 if __name__ == '__main__':
     sys.exit(_main())
+
