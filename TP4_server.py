@@ -76,15 +76,18 @@ class Server:
             validate_account_name(payload.username)
             validate_password(payload.password)
         except RuntimeError as e:
-            error_message : gloutils.ErrorPayload() = {"error_message" : e.message}
+            error_message = gloutils.GloMessage(
+                header = gloutils.Headers.ERROR,
+                payload = gloutils.ErrorPayload(error_message = e.message)
+            )
             return error_message
         
         #Todo : add password encryption
         self._existing_accounts[payload.username] = payload.password          
         self._login(client_soc, payload)   
-        success_message : gloutils.GloMessage() = {
-            "header" : gloutils.Headers.OK
-        }
+        success_message = gloutils.GloMessage(
+            header =gloutils.Headers.OK
+        )
         return success_message
 
     def _login(self, client_soc: socket.socket, payload: gloutils.AuthPayload

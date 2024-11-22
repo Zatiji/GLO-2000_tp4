@@ -41,6 +41,9 @@ class Client:
         """
         self._username = ""
 
+    def _send_message_to_server(message : gloutils.GloMessage) -> gloutils.GloMessage:
+        return gloutils.GloMessage
+
     def _register(self) -> None:
         """
         Demande un nom d'utilisateur et un mot de passe et les transmet au
@@ -52,6 +55,21 @@ class Client:
         print("Entrez un nom d'utilisateur : ")
         username:str = input()
         password:str = getpass.getpass("Entrez votre mot de passe :") 
+        message = gloutils.GloMessage(
+            header=gloutils.Headers.AUTH_REGISTER,
+            payload=gloutils.AuthPayload(
+                username=username,
+                password=password
+            )
+        )
+        server_answer:gloutils.GloMessage = self._send_message_to_server(message)
+        if server_answer.header == gloutils.Headers.ERROR:
+            error_payload : gloutils.ErrorPayload = server_answer.payload
+            print(error_payload.error_message)
+        elif server_answer.header == gloutils.Headers.OK:
+            self._username = username
+        else :
+            raise RuntimeError("An unexpected message type was returned when handling register")
 
 
     def _login(self) -> None:
