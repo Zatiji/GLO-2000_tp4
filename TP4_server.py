@@ -17,6 +17,16 @@ import sys
 import glosocket
 import gloutils
 
+MINIMAL_PASSWORD_LENGTH = 10
+
+def validate_account_name(username : str)-> None:
+    if " " in username:
+        raise RuntimeError("Invalid username")
+
+def validate_password(password : str)-> None:
+    if len(password) < MINIMAL_PASSWORD_LENGTH:
+        raise RuntimeError("Password not long enough")
+    #we could add more checks for special characters and other security
 
 class Server:
     """Serveur mail @glo2000.ca."""
@@ -60,6 +70,12 @@ class Server:
         associe le socket au nouvel l'utilisateur et retourne un succès,
         sinon retourne un message d'erreur.
         """
+        try:
+            validate_account_name(payload.username)
+            validate_password(payload.password)
+        except RuntimeError as e:
+            error_message : gloutils.ErrorPayload() = {"error_message" : e.message}
+            return error_message
         return gloutils.GloMessage()
 
     def _login(self, client_soc: socket.socket, payload: gloutils.AuthPayload
@@ -124,6 +140,9 @@ class Server:
             for waiter in waiters:
                 # Handle sockets
                 pass
+                
+
+
 
 
 def _main() -> int:
