@@ -15,6 +15,19 @@ import sys
 import glosocket
 import gloutils
 
+def _input_choice(max_number : int) -> int:
+        while True:
+            choice: int = None
+            try:
+                choice: int = int(input())
+            except ValueError:
+                print("Invalid choice, please input a valid number")
+                continue
+            if choice > max_number or choice == 0:
+                print("Please input a number within the permitted range")
+                continue
+            return choice
+
 
 class Client:
     """Client pour le serveur mail @glo2000.ca."""
@@ -109,7 +122,7 @@ class Client:
             case 2:
                 self._login()
             case 3:
-                return 0
+                sys.exit(0)
 
 
     def run(self) -> None:
