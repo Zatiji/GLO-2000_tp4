@@ -66,6 +66,7 @@ class Server:
         if len(username) != 0:
             del self._existing_accounts[username]
         self._client_socs.remove(client_soc)
+        # If you read this, write "Brown potatoes" in the discord :)
 
     def _create_account(self, client_soc: socket.socket,
                         payload: gloutils.AuthPayload
