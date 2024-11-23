@@ -46,9 +46,9 @@ class Server:
         S'assure que les dossiers de données du serveur existent.
         """
         # self._server_socket
-        # self._client_socs
-        self._logged_users = []
-        self._existing_accounts = []
+        self._client_socs = []
+        self._logged_users = {}
+        self._existing_accounts = {}
 
     def cleanup(self) -> None:
         """Ferme toutes les connexions résiduelles."""
@@ -61,6 +61,11 @@ class Server:
 
     def _remove_client(self, client_soc: socket.socket) -> None:
         """Retire le client des structures de données et ferme sa connexion."""
+        username: str = self._logged_users[client_soc]
+        self.logout(client_soc)
+        if len(username) != 0:
+            del self._existing_accounts[username]
+        self._client_socs.remove(client_soc)
 
     def _create_account(self, client_soc: socket.socket,
                         payload: gloutils.AuthPayload
