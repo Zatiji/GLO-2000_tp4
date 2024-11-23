@@ -28,7 +28,6 @@ def _input_choice(max_number : int) -> int:
                 continue
             return choice
 
-
 class Client:
     """Client pour le serveur mail @glo2000.ca."""
 
@@ -169,7 +168,6 @@ class Client:
                 self._main_menu()
                 pass
 
-
 def _main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("-d", "--destination", action="store",
@@ -183,3 +181,4 @@ def _main() -> int:
 
 if __name__ == '__main__':
     sys.exit(_main())
+
