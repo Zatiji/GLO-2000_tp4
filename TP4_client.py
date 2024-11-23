@@ -15,6 +15,19 @@ import sys
 import glosocket
 import gloutils
 
+def _input_choice(max_number : int) -> int:
+        while True:
+            choice: int = None
+            try:
+                choice: int = int(input())
+            except ValueError:
+                print("Invalid choice, please input a valid number")
+                continue
+            if choice > max_number or choice == 0:
+                print("Please input a number within the permitted range")
+                continue
+            return choice
+
 
 class Client:
     """Client pour le serveur mail @glo2000.ca."""
@@ -26,6 +39,7 @@ class Client:
         Prépare un attribut `_username` pour stocker le nom d'utilisateur
         courant. Laissé vide quand l'utilisateur n'est pas connecté.
         """
+        self._username = ""
 
     def _register(self) -> None:
         """
@@ -35,6 +49,7 @@ class Client:
         Si la création du compte s'est effectuée avec succès, l'attribut
         `_username` est mis à jour, sinon l'erreur est affichée.
         """
+        print("register")
 
     def _login(self) -> None:
         """
@@ -44,6 +59,7 @@ class Client:
         Si la connexion est effectuée avec succès, l'attribut `_username`
         est mis à jour, sinon l'erreur est affichée.
         """
+        print("login")
 
     def _quit(self) -> None:
         """
@@ -91,14 +107,28 @@ class Client:
         Met à jour l'attribut `_username`.
         """
 
+    def _menu_authentification(self):
+        """"
+        Ouvre le menu textuel permettant d'obtenir l'authentification de l'utilisateur
+        """
+        print(gloutils.CLIENT_AUTH_CHOICE)
+        choice : int = _input_choice(3)
+        match choice:
+            case 1:
+                self._register()
+            case 2:
+                self._login()
+            case 3:
+                sys.exit(0)
+
+
     def run(self) -> None:
         """Point d'entrée du client."""
         should_quit = False
 
         while not should_quit:
             if not self._username:
-                # Authentication menu
-                pass
+                self._menu_authentification()
             else:
                 # Main menu
                 pass
