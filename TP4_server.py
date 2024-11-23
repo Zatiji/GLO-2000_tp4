@@ -17,6 +17,16 @@ import sys
 import glosocket
 import gloutils
 
+MINIMAL_PASSWORD_LENGTH = 10
+
+def validate_account_name(username : str)-> None:
+    if " " in username:
+        raise RuntimeError("Invalid username")
+
+def validate_password(password : str)-> None:
+    if len(password) < MINIMAL_PASSWORD_LENGTH:
+        raise RuntimeError("Password not long enough")
+    #we could add more checks for special characters and other security
 
 class Server:
     """Serveur mail @glo2000.ca."""
@@ -30,13 +40,15 @@ class Server:
         - `_client_socs` une liste des sockets clients.
         - `_logged_users` un dictionnaire associant chaque
             socket client à un nom d'utilisateur.
+        - '_existing_account' un dictionnaire associant les username aux 
+            mots de passes encrypte, sert a gerer la creation de compte
 
         S'assure que les dossiers de données du serveur existent.
         """
         # self._server_socket
         # self._client_socs
-        # self._logged_users
-        # ...
+        self._logged_users = []
+        self._existing_accounts = []
 
     def cleanup(self) -> None:
         """Ferme toutes les connexions résiduelles."""
@@ -60,7 +72,20 @@ class Server:
         associe le socket au nouvel l'utilisateur et retourne un succès,
         sinon retourne un message d'erreur.
         """
-        return gloutils.GloMessage()
+        try:
+            validate_account_name(payload.username)
+            validate_password(payload.password)
+        except RuntimeError as e:
+            error_message : gloutils.ErrorPayload() = {"error_message" : e.message}
+            return error_message
+        
+        #Todo : add password encryption
+        self._existing_accounts[payload.username] = payload.password          
+        self._login(client_soc, payload)   
+        success_message : gloutils.GloMessage() = {
+            "header" : gloutils.Headers.OK
+        }
+        return success_message
 
     def _login(self, client_soc: socket.socket, payload: gloutils.AuthPayload
                ) -> gloutils.GloMessage:
@@ -124,6 +149,9 @@ class Server:
             for waiter in waiters:
                 # Handle sockets
                 pass
+                
+
+
 
 
 def _main() -> int:
