@@ -104,7 +104,28 @@ class Server:
         Si les identifiants sont valides, associe le socket à l'utilisateur et
         retourne un succès, sinon retourne un message d'erreur.
         """
-        return gloutils.GloMessage()
+        received_username = payload.username
+        received_password = payload.password
+        stored_password = self._existing_accounts[received_username]
+        if stored_password is None:
+            error_message = gloutils.GloMessage(
+                header = gloutils.Headers.ERROR,
+                payload = gloutils.ErrorPayload(error_message = "username doesn't exist")
+            )
+            return error_message
+        if stored_password == received_password:
+            # TODO : this comparison should be done with encrypted passwords
+            self._logged_users[received_username] = client_soc
+            ok_message = gloutils.GloMessage(
+                header = gloutils.Headers.OK
+            )
+            return ok_message
+        else:
+            error_message = gloutils.GloMessage(
+                header = gloutils.Headers.ERROR,
+                payload = gloutils.ErrorPayload(error_message = "Invalid password")
+            )
+            return error_message
 
     def _logout(self, client_soc: socket.socket) -> None:
         """Déconnecte un utilisateur."""
