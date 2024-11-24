@@ -134,7 +134,8 @@ class Client:
             print("Logged out")
             self._username = ""
         else:
-            print("Failure to logout")
+            raise RuntimeError("Failure to logout" + response.header)
+
 
     def _menu_authentification(self):
         """"
