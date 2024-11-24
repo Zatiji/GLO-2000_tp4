@@ -129,6 +129,10 @@ class Server:
 
     def _logout(self, client_soc: socket.socket) -> None:
         """Déconnecte un utilisateur."""
+        username : str = next((k for k, v in self._logged_users.items() if v==client_soc), None)
+        if username is None:
+            print("Non existent socket connection, couldn't find the username")
+        self._logged_users.pop(username)
 
     def _get_email_list(self, client_soc: socket.socket
                         ) -> gloutils.GloMessage:
