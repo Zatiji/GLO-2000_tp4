@@ -66,12 +66,12 @@ class Client:
             error_payload : gloutils.ErrorPayload = server_answer.payload
             print(error_payload.error_message)
         elif server_answer.header == gloutils.Headers.OK:
-            self._username = username
+            self._login(username=username, password=password)
         else :
             raise RuntimeError("An unexpected message type was returned when handling register")
 
 
-    def _login(self) -> None:
+    def _login(self, username = None, password = None) -> None:
         """
         Demande un nom d'utilisateur et un mot de passe et les transmet au
         serveur avec l'entête `AUTH_LOGIN`.
@@ -79,7 +79,26 @@ class Client:
         Si la connexion est effectuée avec succès, l'attribut `_username`
         est mis à jour, sinon l'erreur est affichée.
         """
-        print("login")
+        if (not username or not password):
+            print("Entrez un nom d'utilisateur : ")
+            username:str = input()
+            password:str = getpass.getpass("Entrez votre mot de passe :") 
+        
+        login_message = gloutils.GloMessage(
+            header=gloutils.Headers.AUTH_LOGIN,
+            payload=gloutils.AuthPayload(
+                username=username,
+                password=password
+            )
+        )
+        server_answer : gloutils.GloMessage = self._send_message_to_server(login_message)
+        if server_answer.header == gloutils.Headers.ERROR:
+            error_payload : gloutils.ErrorPayload = server_answer.payload
+            print(error_payload.error_message)
+        elif server_answer.header == gloutils.Headers.OK:
+            self._username = username
+        else :
+            raise RuntimeError("An unexpected message type was returned when handling login")
 
     def _quit(self) -> None:
         """
@@ -144,7 +163,6 @@ class Client:
             self._username = ""
         else:
             raise RuntimeError("Failure to logout" + response.header)
-
 
     def _menu_authentification(self):
         """"
