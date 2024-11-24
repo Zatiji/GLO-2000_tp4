@@ -126,6 +126,15 @@ class Client:
 
         Met à jour l'attribut `_username`.
         """
+        logout_message = gloutils.GloMessage(
+            header = gloutils.Headers.AUTH_LOGOUT
+        )
+        response : gloutils.GloMessage = self._send_message_to_server(logout_message)
+        if response.header == gloutils.Headers.OK:
+            print("Logged out")
+            self._username = ""
+        else:
+            print("Failure to logout")
 
     def _menu_authentification(self):
         """"
