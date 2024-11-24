@@ -86,6 +86,15 @@ class Client:
         Préviens le serveur de la déconnexion avec l'entête `BYE` et ferme le
         socket du client.
         """
+        quit_message = gloutils.GloMessage(
+            header = gloutils.Headers.BYE
+        )
+        response : gloutils.GloMessage = self._send_message_to_server(quit_message)
+        if response.header == gloutils.Headers.OK:
+            print("Quit")
+            sys.exit(1)
+        else:
+            raise RuntimeError("Failure to quit " + response.header)
 
     def _read_email(self) -> None:
         """
