@@ -156,12 +156,7 @@ class Client:
         logout_message = gloutils.GloMessage(
             header = gloutils.Headers.AUTH_LOGOUT
         )
-        response : gloutils.GloMessage = self._send_message_to_server(logout_message)
-        if response.header == gloutils.Headers.OK:
-            print("Logged out")
-            self._username = ""
-        else:
-            raise RuntimeError("Failure to logout" + response.header)
+        self._send_message_to_server(logout_message)
 
     def _menu_authentification(self):
         """"
