@@ -46,9 +46,9 @@ class Server:
         S'assure que les dossiers de données du serveur existent.
         """
         # self._server_socket
-        # self._client_socs
-        self._logged_users = []
-        self._existing_accounts = []
+        self._client_socs = []
+        self._logged_users = {}
+        self._existing_accounts = {}
 
     def cleanup(self) -> None:
         """Ferme toutes les connexions résiduelles."""
@@ -61,6 +61,12 @@ class Server:
 
     def _remove_client(self, client_soc: socket.socket) -> None:
         """Retire le client des structures de données et ferme sa connexion."""
+        username: str = self._logged_users[client_soc]
+        self.logout(client_soc)
+        if len(username) != 0:
+            del self._existing_accounts[username]
+        self._client_socs.remove(client_soc)
+        # If you read this, write "Brown potatoes" in the discord :)
 
     def _create_account(self, client_soc: socket.socket,
                         payload: gloutils.AuthPayload
@@ -76,15 +82,18 @@ class Server:
             validate_account_name(payload.username)
             validate_password(payload.password)
         except RuntimeError as e:
-            error_message : gloutils.ErrorPayload() = {"error_message" : e.message}
+            error_message = gloutils.GloMessage(
+                header = gloutils.Headers.ERROR,
+                payload = gloutils.ErrorPayload(error_message = e.message)
+            )
             return error_message
         
         #Todo : add password encryption
         self._existing_accounts[payload.username] = payload.password          
         self._login(client_soc, payload)   
-        success_message : gloutils.GloMessage() = {
-            "header" : gloutils.Headers.OK
-        }
+        success_message = gloutils.GloMessage(
+            header =gloutils.Headers.OK
+        )
         return success_message
 
     def _login(self, client_soc: socket.socket, payload: gloutils.AuthPayload

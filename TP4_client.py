@@ -28,7 +28,6 @@ def _input_choice(max_number : int) -> int:
                 continue
             return choice
 
-
 class Client:
     """Client pour le serveur mail @glo2000.ca."""
 
@@ -41,6 +40,9 @@ class Client:
         """
         self._username = ""
 
+    def _send_message_to_server(message : gloutils.GloMessage) -> gloutils.GloMessage:
+        return gloutils.GloMessage
+
     def _register(self) -> None:
         """
         Demande un nom d'utilisateur et un mot de passe et les transmet au
@@ -49,7 +51,25 @@ class Client:
         Si la création du compte s'est effectuée avec succès, l'attribut
         `_username` est mis à jour, sinon l'erreur est affichée.
         """
-        print("register")
+        print("Entrez un nom d'utilisateur : ")
+        username:str = input()
+        password:str = getpass.getpass("Entrez votre mot de passe :") 
+        message = gloutils.GloMessage(
+            header=gloutils.Headers.AUTH_REGISTER,
+            payload=gloutils.AuthPayload(
+                username=username,
+                password=password
+            )
+        )
+        server_answer:gloutils.GloMessage = self._send_message_to_server(message)
+        if server_answer.header == gloutils.Headers.ERROR:
+            error_payload : gloutils.ErrorPayload = server_answer.payload
+            print(error_payload.error_message)
+        elif server_answer.header == gloutils.Headers.OK:
+            self._username = username
+        else :
+            raise RuntimeError("An unexpected message type was returned when handling register")
+
 
     def _login(self) -> None:
         """
@@ -148,7 +168,6 @@ class Client:
                 self._main_menu()
                 pass
 
-
 def _main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("-d", "--destination", action="store",
@@ -162,3 +181,4 @@ def _main() -> int:
 
 if __name__ == '__main__':
     sys.exit(_main())
+
