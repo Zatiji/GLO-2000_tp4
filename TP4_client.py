@@ -79,7 +79,25 @@ class Client:
         Si la connexion est effectuée avec succès, l'attribut `_username`
         est mis à jour, sinon l'erreur est affichée.
         """
-        print("login")
+        print("Entrez un nom d'utilisateur : ")
+        username:str = input()
+        password:str = getpass.getpass("Entrez votre mot de passe :") 
+        
+        login_message = gloutils.GloMessage(
+            header=gloutils.Headers.AUTH_LOGIN,
+            payload=gloutils.AuthPayload(
+                username=username,
+                password=password
+            )
+        )
+        server_answer : gloutils.GloMessage = self._send_message_to_server(login_message)
+        if server_answer.header == gloutils.Headers.ERROR:
+            error_payload : gloutils.ErrorPayload = server_answer.payload
+            print(error_payload.error_message)
+        elif server_answer.header == gloutils.Headers.OK:
+            self._username = username
+        else :
+            raise RuntimeError("An unexpected message type was returned when handling login")
 
     def _quit(self) -> None:
         """
@@ -144,7 +162,6 @@ class Client:
             self._username = ""
         else:
             raise RuntimeError("Failure to logout" + response.header)
-
 
     def _menu_authentification(self):
         """"
